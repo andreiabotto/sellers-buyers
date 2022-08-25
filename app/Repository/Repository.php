@@ -12,10 +12,17 @@ abstract class Repository implements IRepository
      */
     protected $model;
 
+    public function __construct()
+    {
+        $this->model = $this->GetModelPath();
+    }
+
     public function Find(int $id)
     {
         return $this->model->find($id);
     }
+
+    abstract function GetModelPath();
 
     public function All()
     {
