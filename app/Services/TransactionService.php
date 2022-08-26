@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Events\TransactionError;
+use App\Events\TransactionSuccess;
 use App\Managers\Interfaces\IAuthorizeTransactionManager;
 use App\Models\Transaction;
 use App\Repository\Interfaces\IRepositoryFactory;
@@ -36,14 +38,14 @@ class TransactionService
 
             $receiver = $accountRepo->Find($accountIdReceiver);
 
+            if($receiver == null)
+                throw new \Exception("Invalid Receiver", 400);
+
             if($sender->Wallet == null)
                 throw new \Exception("Sender does not have Wallet associated", 400);
 
             if($receiver->Wallet == null)
                 throw new \Exception("Receiver does not have Wallet associated", 400);
-
-            if($receiver->Wallet == null)
-                throw new \Exception("Invalid Receiver", 400);
 
             if(!$sender->Wallet->canSend)
                 throw new \Exception("Sender not allowed to Send Money", 400);
@@ -78,10 +80,13 @@ class TransactionService
             $walletRepo->Update($receiverWallet->id, $receiverWallet);
             $walletRepo->Commit();
 
+            TransactionSuccess::dispatch($transaction);
+
             return true;
 
         } catch (\Exception $e) {
             Log::error($e->getMessage(), $e);
+            TransactionError::dispatch($value, $e->getMessage());
             throw $e;
         }
     }

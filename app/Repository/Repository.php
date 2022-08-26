@@ -14,7 +14,7 @@ abstract class Repository implements IRepository
 
     public function __construct()
     {
-        $this->model = $this->GetModelPath();
+        $this->model = new $this->GetModelPath();
     }
 
     public function Find(int $id)
