@@ -27,8 +27,11 @@ class TransactionService
     {
         try {
             if($value <= 0) {
-                throw new \Exception("Transaction with Zero or negative value is not allowed", 400);
+                throw new \Exception("TransactionController with Zero or negative value is not allowed", 400);
             }
+
+            if($accountIdSender == $accountIdReceiver)
+                throw new \Exception("Sender and Receiver cannot be the same", 400);
 
             $accountRepo = $this->repositoryFactory->GetAccountRepository();
             $sender = $accountRepo->Find($accountIdSender);
@@ -47,10 +50,10 @@ class TransactionService
             if($receiver->Wallet == null)
                 throw new \Exception("Receiver does not have Wallet associated", 400);
 
-            if(!$sender->Wallet->canSend)
+            if(!$sender->Wallet->allow_send)
                 throw new \Exception("Sender not allowed to Send Money", 400);
 
-            if(!$receiver->Wallet->canReceive)
+            if(!$receiver->Wallet->allow_receive)
                 throw new \Exception("Receiver not allowed to Receive", 400);
 
             if($sender->Wallet->balance < $value)
@@ -80,12 +83,12 @@ class TransactionService
             $walletRepo->Update($receiverWallet->id, $receiverWallet);
             $walletRepo->Commit();
 
-            TransactionSuccess::dispatch($transaction);
+            TransactionSuccess::dispatch($sender->getFullName(), $receiver->getFullName(), $receiver->email, $value);
 
             return true;
 
         } catch (\Exception $e) {
-            Log::error($e->getMessage(), $e);
+            Log::error($e->getMessage());
             TransactionError::dispatch($value, $e->getMessage());
             throw $e;
         }

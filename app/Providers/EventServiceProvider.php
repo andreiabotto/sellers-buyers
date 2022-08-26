@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\TransactionError;
+use App\Events\TransactionSuccess;
+use App\Listeners\TransactionErrorNotification;
+use App\Listeners\TransactionSucessNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +22,12 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        TransactionSuccess::class => [
+            TransactionSucessNotification::class,
+        ],
+        TransactionError::class => [
+            TransactionErrorNotification::class,
+        ]
     ];
 
     /**
@@ -37,6 +47,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function shouldDiscoverEvents()
     {
-        return false;
+        return true;
     }
 }

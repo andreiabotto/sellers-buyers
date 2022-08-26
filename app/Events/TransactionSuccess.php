@@ -15,16 +15,22 @@ class TransactionSuccess
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $transaction;
+    public $senderName;
+    public $receiverName;
+    public $receiverAddress;
+    public $value;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Transaction $transaction)
+    public function __construct($senderName, $receiverName, $receiverAddress, $value)
     {
-        $this->transaction = $transaction;
+        $this->senderName = $senderName;
+        $this->receiverName = $receiverName;
+        $this->receiverAddress = $receiverAddress;
+        $this->value = $value;
     }
 
     /**

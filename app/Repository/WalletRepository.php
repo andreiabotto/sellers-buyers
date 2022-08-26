@@ -6,7 +6,10 @@ use App\Models\Wallet;
 
 class WalletRepository extends Repository
 {
-
+    public function __construct()
+    {
+        $this->model = new Wallet();
+    }
 
     function GetModelPath()
     {

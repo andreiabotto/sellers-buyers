@@ -14,7 +14,7 @@ class SenderSmsManager implements ISenderManager
         try {
             $response = HTTP::acceptJson()->timeout(30)->get('http://o4d9z.mocklab.io/notify');
             $response->throw();
-            $result = json_decode($response->json(), true);
+            $result =$response->json();
             if($result['message'] !== "Success")
                 throw new \Exception("Notification Not Successfull");
 

@@ -9,8 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 class AccountRepository extends Repository
 {
 
+    public function __construct()
+    {
+        $this->model = new Account();
+    }
 
-    function GetModelPath()
+    public function GetModelPath() : string
     {
         return "App\\Models\\Account";
     }

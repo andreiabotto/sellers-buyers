@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Repository\Interfaces\IRepository;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 abstract class Repository implements IRepository
 {
@@ -11,11 +12,6 @@ abstract class Repository implements IRepository
      * @var Model
      */
     protected $model;
-
-    public function __construct()
-    {
-        $this->model = new $this->GetModelPath();
-    }
 
     public function Find(int $id)
     {
@@ -25,33 +21,31 @@ abstract class Repository implements IRepository
     public function Exists($field, $value) : bool
     {
         try {
-
-            return true;
+            return $this->model::where($field, $value)->count() > 0;
         } catch (\Exception $e) {
+            Log::error($e->getMessage());
             return false;
         }
     }
 
-    abstract function GetModelPath();
-
     public function All()
     {
-        // TODO: Implement All() method.
+        return $this->model::all();
     }
 
     public function Create(Model $model)
     {
-        // TODO: Implement Create() method.
+        return $model->saveOrFail();
     }
 
     public function Update(int $id, Model $model)
     {
-        // TODO: Implement Update() method.
+        return $model->saveOrFail();
     }
 
     public function Delete(int $id)
     {
-        // TODO: Implement Delete() method.
+       return $this->model->deleteOrFail($id);
     }
 
     public function Commit()
