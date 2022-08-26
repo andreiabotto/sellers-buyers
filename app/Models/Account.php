@@ -14,7 +14,8 @@ class Account extends Model
         'lastName',
         'cpf',
         'email',
-        'password'
+        'password',
+        'isSeller'
     ];
 
     protected $with=['Wallet'];

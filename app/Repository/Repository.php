@@ -22,6 +22,16 @@ abstract class Repository implements IRepository
         return $this->model->find($id);
     }
 
+    public function Exists($field, $value) : bool
+    {
+        try {
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
     abstract function GetModelPath();
 
     public function All()

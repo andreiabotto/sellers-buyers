@@ -8,6 +8,7 @@ interface IRepository
 {
     public function Find(int $id);
     public function All();
+    public function Exists($field, $value) : bool;
     public function Create(Model $model);
     public function Update(int $id, Model $model);
     public function Delete(int $id);
